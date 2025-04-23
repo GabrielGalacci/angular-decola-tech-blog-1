@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { ActivatedRoute, RouterLink } from '@angular/router';
+import { dataFake } from '../../data/dataFake';
 
 @Component({
   selector: 'app-content',
@@ -8,7 +9,28 @@ import { RouterLink } from '@angular/router';
   styleUrl: './content.component.css'
 })
 export class ContentComponent {
-  photoCover:string = "https://th.bing.com/th/id/OIP.Kw5HD9vIyC0Jnmc-XI3tRAHaEK?w=287&h=180&c=7&r=0&o=5&pid=1.7"
-  contentTitle:string = "Minha Notícia"
-  contentDescription:string = "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptatum labore ducimus in illo ab ratione harum laborum officiis officia accusantium, temporibus nemo maiores tempore veniam quae. Quis amet repellat architecto!"
+  photoCover:string = ""
+  contentTitle:string = ""
+  contentDescription:string = ""
+  private id:string | null = "0"
+
+  constructor(
+    private route:ActivatedRoute
+  ) {}
+
+  ngOnInit(): void {
+    this.route.paramMap.subscribe( value =>
+      this.id = value.get("id")
+    )
+
+    this.setValuesToComponent(this.id)
+  }
+
+  setValuesToComponent(id:string | null) {
+    const result = dataFake.filter(article => article.id == id)[0]
+
+    this.contentTitle = result.title
+    this.contentDescription = result.description
+    this.photoCover = result.photoCover
+  }
 }
